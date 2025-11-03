@@ -116,7 +116,7 @@ recognizer.run_webcam_demo()
 Use the comprehensive testing interface with accuracy tracking:
 
 ```bash
-python webcam_gesture_tester.py
+uv run webcam_gesture_tester.py
 ```
 
 Features:
