@@ -102,12 +102,31 @@ Run the Jupyter notebook cells sequentially:
 
 ### Real-time Recognition
 
-Uncomment and run the webcam demo:
+**Option 1: Using the Notebook**
+
+Uncomment and run the webcam demo in the notebook:
 
 ```python
 recognizer = RealTimeGestureRecognizer('hand_gesture_lstm_model.h5', gesture_mapping)
 recognizer.run_webcam_demo()
 ```
+
+**Option 2: Using the Webcam Tester (Recommended)**
+
+Use the comprehensive testing interface with accuracy tracking:
+
+```bash
+python webcam_gesture_tester.py
+```
+
+Features:
+- ✅ Live gesture prediction with confidence scores
+- ✅ Accuracy and error rate tracking
+- ✅ Per-gesture performance statistics
+- ✅ Interactive testing mode
+- ✅ Export results to file
+
+See [WEBCAM_TESTER_GUIDE.md](WEBCAM_TESTER_GUIDE.md) for detailed instructions.
 
 Press 'q' to quit the webcam window.
 
@@ -160,13 +179,17 @@ The model recognizes 10 different hand gestures from the LeapGestRecog dataset. 
 
 ```
 hand_gesture_recognition/
-├── hand_gesture_recognition.ipynb  # Main notebook
+├── hand_gesture_recognition.ipynb  # Main training notebook
+├── webcam_gesture_tester.py       # Webcam testing interface
 ├── README.md                       # This file
 ├── INSTALLATION.md                # Detailed installation guide
 ├── TECHNICAL_REPORT.md            # Detailed mathematical concepts
+├── WEBCAM_TESTER_GUIDE.md         # Webcam tester user guide
 ├── LICENSE.md                      # License
 ├── pyproject.toml                 # Project configuration (uv)
 ├── hand_gesture_lstm_model.h5     # Saved model (generated)
+├── gesture_mapping.json           # Gesture labels (generated)
+├── gesture_test_results_*.txt     # Test results (generated)
 └── leapgestrecog/                 # Dataset (auto-downloaded & auto-deleted)
 ```
 
