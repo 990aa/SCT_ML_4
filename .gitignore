@@ -1,6 +1,5 @@
 .venv/
 *.ipynb 
 *.py
-*.md
 datasets/
 .ruff_cache/
