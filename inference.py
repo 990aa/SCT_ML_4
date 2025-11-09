@@ -88,6 +88,8 @@ class MediaPipeExtractor:
 def run_webcam(model, id_to_gesture):
     extractor = MediaPipeExtractor()
     sequence = []
+    current_prediction = None
+    current_confidence = 0.0
 
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
@@ -104,7 +106,10 @@ def run_webcam(model, id_to_gesture):
             break
 
         frame = cv2.flip(frame, 1)
-        landmarks, has_hand = extractor.extract(frame)
+        landmarks, has_hand, results = extractor.extract(frame)
+
+        # Draw hand landmarks on the frame
+        extractor.draw_landmarks(frame, results)
 
         if has_hand:
             sequence.append(landmarks)
@@ -115,21 +120,60 @@ def run_webcam(model, id_to_gesture):
             idx = int(np.argmax(preds))
             conf = float(preds[idx])
             gesture = id_to_gesture.get(idx, f"class_{idx}")
+            current_prediction = gesture
+            current_confidence = conf
             print(f"Prediction: {gesture} (confidence: {conf:.2%})")
             sequence = []
 
-        # Simple overlay
+        # Get frame dimensions
         h, w = frame.shape[:2]
-        status = "Hand detected" if has_hand else "No hand"
-        cv2.putText(frame, status, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0) if has_hand else (0, 0, 255), 2)
+        
+        # Create a semi-transparent overlay for better text visibility
+        overlay = frame.copy()
+        
+        # Top status bar
+        cv2.rectangle(overlay, (0, 0), (w, 100), (0, 0, 0), -1)
+        frame = cv2.addWeighted(overlay, 0.3, frame, 0.7, 0)
+        
+        # Hand detection status
+        status = "Hand detected ✓" if has_hand else "No hand detected"
+        status_color = (0, 255, 0) if has_hand else (0, 0, 255)
+        cv2.putText(frame, status, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, status_color, 2)
+
+        # Buffer status
+        buffer_text = f"Buffer: {len(sequence)}/{SEQUENCE_LENGTH}"
+        cv2.putText(frame, buffer_text, (10, 65), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
 
         # FPS
         frame_count += 1
         elapsed = time.time() - start_time
         fps = frame_count / elapsed if elapsed > 0 else 0
-        cv2.putText(frame, f"FPS: {fps:.1f}", (w - 140, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+        cv2.putText(frame, f"FPS: {fps:.1f}", (w - 150, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
 
-        cv2.imshow("Hand Gesture Inference", frame)
+        # Prediction display at the bottom
+        if current_prediction:
+            # Create bottom overlay for prediction
+            pred_overlay = frame.copy()
+            cv2.rectangle(pred_overlay, (0, h - 120), (w, h), (0, 0, 0), -1)
+            frame = cv2.addWeighted(pred_overlay, 0.4, frame, 0.6, 0)
+            
+            # Prediction text
+            pred_text = f"Gesture: {current_prediction.upper()}"
+            conf_text = f"Confidence: {current_confidence:.1%}"
+            
+            cv2.putText(frame, pred_text, (10, h - 70), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 255), 3)
+            cv2.putText(frame, conf_text, (10, h - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
+            
+            # Confidence bar
+            bar_width = int((w - 40) * current_confidence)
+            cv2.rectangle(frame, (20, h - 15), (w - 20, h - 5), (50, 50, 50), -1)
+            bar_color = (0, 255, 0) if current_confidence > 0.7 else (0, 165, 255) if current_confidence > 0.4 else (0, 0, 255)
+            cv2.rectangle(frame, (20, h - 15), (20 + bar_width, h - 5), bar_color, -1)
+
+        # Instructions
+        cv2.putText(frame, "Press 'q' to quit", (w - 220, h - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
+
+        cv2.imshow("Hand Gesture Recognition", frame)
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
 
