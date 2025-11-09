@@ -3,5 +3,5 @@ datasets/
 .ruff_cache/
 *.h5
 .env
-*.md
+.md/
 .cache_hf_model/
