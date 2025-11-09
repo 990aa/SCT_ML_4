@@ -58,6 +58,9 @@ class MediaPipeExtractor:
             min_detection_confidence=0.5,
             min_tracking_confidence=0.5,
         )
+        self.mp_drawing = mp.solutions.drawing_utils
+        self.mp_drawing_styles = mp.solutions.drawing_styles
+        self.mp_hands = mp.solutions.hands
 
     def extract(self, image):
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -67,7 +70,19 @@ class MediaPipeExtractor:
             for hand_landmarks in results.multi_hand_landmarks:
                 for lm in hand_landmarks.landmark:
                     landmarks.extend([lm.x, lm.y, lm.z])
-        return (np.array(landmarks) if landmarks else np.zeros(63), bool(results.multi_hand_landmarks))
+        return (np.array(landmarks) if landmarks else np.zeros(63), bool(results.multi_hand_landmarks), results)
+    
+    def draw_landmarks(self, image, results):
+        """Draw hand landmarks on the image."""
+        if results.multi_hand_landmarks:
+            for hand_landmarks in results.multi_hand_landmarks:
+                self.mp_drawing.draw_landmarks(
+                    image,
+                    hand_landmarks,
+                    self.mp_hands.HAND_CONNECTIONS,
+                    self.mp_drawing_styles.get_default_hand_landmarks_style(),
+                    self.mp_drawing_styles.get_default_hand_connections_style()
+                )
 
 
 def run_webcam(model, id_to_gesture):
