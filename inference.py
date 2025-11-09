@@ -14,11 +14,10 @@ import time
 from pathlib import Path
 
 import cv2
-import numpy as np
 import mediapipe as mp
+import numpy as np
 import tensorflow as tf
 from huggingface_hub import hf_hub_download
-
 
 SEQUENCE_LENGTH = 30
 LOCAL_DIR = Path(".cache_hf_model")

@@ -4,3 +4,4 @@ datasets/
 *.h5
 .env
 *.md
+.cache_hf_model/
