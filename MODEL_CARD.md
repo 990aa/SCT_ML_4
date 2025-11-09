@@ -1,3 +1,22 @@
+---
+title: Hand Gesture Recognition
+emoji: 🖐️
+colorFrom: blue
+colorTo: green
+library_name: tensorflow
+license: mit
+tags:
+  - computer-vision
+  - gesture-recognition
+  - lstm
+  - mediapipe
+  - hand-tracking
+  - video-classification
+  - tensorflow
+  - keras
+  - deep-learning
+---
+
 # Model Card: Hand Gesture Recognition LSTM
 
 ## Model Description

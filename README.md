@@ -3,10 +3,7 @@ title: Hand Gesture Recognition
 emoji: 🖐️
 colorFrom: blue
 colorTo: green
-sdk: gradio
-sdk_version: 4.44.0
-app_file: app.py
-pinned: false
+library_name: tensorflow
 license: mit
 tags:
   - computer-vision
@@ -15,6 +12,9 @@ tags:
   - mediapipe
   - hand-tracking
   - video-classification
+  - tensorflow
+  - keras
+  - deep-learning
 ---
 
 
