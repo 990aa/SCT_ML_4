@@ -1,8 +1,28 @@
+---
+title: Hand Gesture Recognition
+emoji: 🖐️
+colorFrom: blue
+colorTo: green
+sdk: gradio
+sdk_version: 4.44.0
+app_file: app.py
+pinned: false
+license: mit
+tags:
+  - computer-vision
+  - gesture-recognition
+  - lstm
+  - mediapipe
+  - hand-tracking
+  - video-classification
+---
+
+
 # Hand Gesture Recognition using LSTM
 
 A real-time hand gesture recognition system using MediaPipe for hand pose extraction and LSTM neural networks for temporal sequence classification.
 
-## 🎯 Project Overview
+## Project Overview
 
 This project implements a complete pipeline for recognizing hand gestures from video sequences using:
 - **MediaPipe Hands** for extracting 21 3D hand landmarks
@@ -10,7 +30,7 @@ This project implements a complete pipeline for recognizing hand gestures from v
 - **Data Augmentation** to improve model generalization
 - **Real-time Recognition** capability via webcam
 
-## 📊 Dataset
+## Dataset
 
 The project uses the **LeapGestRecog** dataset from Kaggle:
 - **Source**: `gti-upm/leapgestrecog`
@@ -18,7 +38,7 @@ The project uses the **LeapGestRecog** dataset from Kaggle:
 - **Format**: 100 frames per gesture sequence (PNG images)
 - The dataset is automatically downloaded to the current directory and cleaned up after training
 
-## 🚀 Features
+## Features
 
 1. **Automatic Dataset Management**
    - Downloads dataset to current directory
@@ -47,7 +67,7 @@ The project uses the **LeapGestRecog** dataset from Kaggle:
    - Live predictions with confidence scores
    - Visual feedback with hand landmark overlay
 
-## 🛠️ Installation
+## Installation
 
 This project uses **uv** for fast and reliable package management.
 
@@ -77,60 +97,35 @@ uv pip install -e .
 
 All dependencies are automatically installed via `uv pip install -e .`
 
-## 📖 Usage
+## Real-time Recognition
 
-### Training the Model
+### Using Inference Script (Recommended)
 
-Run the Jupyter notebook cells sequentially:
+The easiest way to test the model is using the `inference.py` script, which downloads the model from Hugging Face and runs webcam inference:
 
-```python
-# 1. Download dataset (Cell 1)
-
-# 2. Import libraries and initialize MediaPipe (Cell 2)
-
-# 3. Extract hand landmarks from all images (Cells 3-4)
-
-# 4. Create sequences and apply augmentation (Cells 5-6)
-
-# 5. Build and train LSTM model (Cells 7-8)
-
-# 6. Evaluate model performance (Cells 9-11)
-
-# 7. Cleanup dataset (Cell 12)
-# Automatically removes downloaded files
+```bash
+python inference.py --repo a-01a/hand-gesture-recognition
 ```
 
-### Real-time Recognition
+Features:
+- ✅ Automatically downloads model from Hugging Face Hub
+- ✅ Live gesture prediction with confidence scores
+- ✅ Real-time hand landmark detection using MediaPipe
+- ✅ FPS counter and hand detection status
+- ✅ No manual model download required
 
-**Option 1: Using the Notebook**
+Press 'q' to quit the webcam window.
 
-Uncomment and run the webcam demo in the notebook:
+### Using the Notebook
+
+Alternatively, you can run the webcam demo in the notebook after training:
 
 ```python
 recognizer = RealTimeGestureRecognizer('hand_gesture_lstm_model.h5', gesture_mapping)
 recognizer.run_webcam_demo()
 ```
 
-**Option 2: Using the Webcam Tester (Recommended)**
-
-Use the comprehensive testing interface with accuracy tracking:
-
-```bash
-uv run webcam_gesture_tester.py
-```
-
-Features:
-- ✅ Live gesture prediction with confidence scores
-- ✅ Accuracy and error rate tracking
-- ✅ Per-gesture performance statistics
-- ✅ Interactive testing mode
-- ✅ Export results to file
-
-See [WEBCAM_TESTER_GUIDE.md](WEBCAM_TESTER_GUIDE.md) for detailed instructions.
-
-Press 'q' to quit the webcam window.
-
-## 📐 Model Architecture
+## Model Architecture
 
 ```
 Input: (30, 63) - 30 frames × 63 features
@@ -153,7 +148,7 @@ Dense Layer 2: 128 units (ReLU)
 Output Layer: 10 units (Softmax)
 ```
 
-## 📊 Performance
+## Performance
 
 The model is evaluated using:
 - **Accuracy**: Overall classification accuracy
@@ -161,11 +156,11 @@ The model is evaluated using:
 - **Classification Report**: Precision, recall, F1-score per gesture
 - **Gesture-wise Analysis**: Individual gesture accuracy
 
-## 🎨 Gestures Recognized
+## Gestures Recognized
 
 The model recognizes 10 different hand gestures from the LeapGestRecog dataset. Each gesture has unique characteristics captured through the temporal sequence of hand landmarks.
 
-## 🔧 Hyperparameters
+## Hyperparameters
 
 - **Sequence Length**: 30 frames
 - **LSTM Units**: 128 → 128 → 64
@@ -175,37 +170,46 @@ The model recognizes 10 different hand gestures from the LeapGestRecog dataset. 
 - **Epochs**: 100 (with EarlyStopping)
 - **Train/Val/Test Split**: 64%/16%/20%
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 hand_gesture_recognition/
 ├── hand_gesture_recognition.ipynb  # Main training notebook
-├── webcam_gesture_tester.py       # Webcam testing interface
+├── inference.py                    # Webcam inference with model download from HF
+├── upload_to_huggingface.py       # Upload model to Hugging Face
 ├── README.md                       # This file
-├── INSTALLATION.md                # Detailed installation guide
 ├── TECHNICAL_REPORT.md            # Detailed mathematical concepts
-├── WEBCAM_TESTER_GUIDE.md         # Webcam tester user guide
 ├── LICENSE.md                      # License
 ├── pyproject.toml                 # Project configuration (uv)
 ├── hand_gesture_lstm_model.h5     # Saved model (generated)
 ├── gesture_mapping.json           # Gesture labels (generated)
-├── gesture_test_results_*.txt     # Test results (generated)
-└── leapgestrecog/                 # Dataset (auto-downloaded & auto-deleted)
+└── datasets/                       # Dataset (auto-downloaded & auto-deleted)
 ```
 
-## 🧹 Cleanup
+## Cleanup
 
-The notebook automatically deletes the downloaded dataset after training to save disk space. This includes:
-- The `leapgestrecog/` directory
-- Any cached files from kagglehub
+The notebook automatically deletes the downloaded dataset after training to save disk space. The trained model and gesture mappings are saved locally and can be uploaded to Hugging Face for easy sharing and deployment.
 
-The cleanup happens automatically in the final cell of the notebook.
-
-## 🔬 For More Details
+## For More Details
 
 See [TECHNICAL_REPORT.md](TECHNICAL_REPORT.md) for a comprehensive explanation of all mathematical concepts, algorithms, and methodologies used in this project.
 
-## 📝 License
+## Citation
 
-See [LICENSE.md](LICENSE.md) for license information.
+If you use this model in your research or application, please cite:
+
+```bibtex
+@misc{hand_gesture_lstm_2025,
+  title={Hand Gesture Recognition using LSTM and MediaPipe},
+  author={Abdul Ahad},
+  year={2025},
+  howpublished={\url{https://huggingface.co/spaces/a-01a/hand-gesture-recognition}},
+  note={Real-time hand gesture recognition system using MediaPipe and LSTM networks}
+}
+```
+
+## 📄 License
+
+MIT License - See [LICENSE.md](LICENSE.md) for details.
+
 ---

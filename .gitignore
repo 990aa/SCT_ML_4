@@ -3,3 +3,4 @@ datasets/
 .ruff_cache/
 *.h5
 .env
+*.md
